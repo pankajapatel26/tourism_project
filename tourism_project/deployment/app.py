@@ -4,7 +4,7 @@ import pandas as pd
 import joblib
 
 # Load the model committed by the pipeline (sits next to this file)
-model_path = os.path.join(os.path.dirname(__file__), "best_machine_tourism.joblib")
+model_path = os.path.join("tourism_project/deployment/", "best_machine_tourism.joblib")
 model = joblib.load(model_path)
 
 st.title("Tourism Package Purchase Prediction App")
