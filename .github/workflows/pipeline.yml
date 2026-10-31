@@ -52,28 +52,27 @@ jobs:
             ytest.csv
 
    # ---------- JOB 3: Model Training + MLflow Tracking ----------
-  model-training:
-    name: Model Training
-    needs: data-preparation          # waits for Job 2 to finish
+ model-traning:
+    needs: data-prep
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install dependencies
-        run: pip install -r tourism_project/deployment/requirements.txt
-      - name: Download train/test splits
+      - name: Install Dependencies
+        run:  pip install -r tourism_project/deployment/requirements.txt
+      - name: Download Train Test Splits
         uses: actions/download-artifact@v4
         with:
-          name: data-splits          # brings Xtrain/Xtest/ytrain/ytest from Job 2
-      - name: Start MLflow tracking server
+          name: data-splits
+      - name: Start MLflow Server
         run: |
-          nohup tourism_project ui --host 0.0.0.0 --port 5000 &   # Run tourism_project UI in the background
-          sleep 5                                        # give the server a moment to start
-      - name: Train model with MLflow tracking
+          nohup mlflow ui --host 0.0.0.0 --port 5000 &  # Run MLflow UI in the background
+          sleep 5  # Wait for a moment to let the server starts
+      - name: Model Building
         run: python tourism_project/model_building/train.py
-      - name: Commit trained model
+      - name: Commit Trained Model
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
